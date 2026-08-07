@@ -10,12 +10,12 @@
 #        ew1r-leaf-06, ew1r-leaf-07, ew1r-leaf-08
 # ============================================================
 
-SNAPSHOT_DIR="/var/lib/memsql/$(ls /var/lib/memsql/ | head -1)/data/snapshots"
-HOSTNAME=$(hostname)
+SNAPSHOT_DIR="/var/lib/memsql/$(find /var/lib/memsql/ -maxdepth 1 -mindepth 1 -type d | head -1)/data/snapshots"
+NODE_NAME=$(hostname)
 
-echo "--- Running on: $HOSTNAME ---"
+echo "--- Running on: $NODE_NAME ---"
 echo "--- Orphaned snapshots to be deleted ---"
-ls -lh "$SNAPSHOT_DIR" | grep -E "UDM1_Kurtosys|DBAdmin_24062026"
+find "$SNAPSHOT_DIR" -maxdepth 1 \( -name "UDM1_Kurtosys_*" -o -name "DBAdmin_24062026_*" \) -ls
 
 # ============================================================
 # Delete all DBAdmin_24062026 snapshots — applies to all nodes
@@ -31,7 +31,7 @@ rm -f "$SNAPSHOT_DIR"/UDM1_Kurtosys_*
 # Verify nothing was missed
 # ============================================================
 echo "--- Verifying cleanup ---"
-REMAINING=$(ls -lh "$SNAPSHOT_DIR" | grep -E "UDM1_Kurtosys|DBAdmin_24062026")
+REMAINING=$(find "$SNAPSHOT_DIR" -maxdepth 1 \( -name "UDM1_Kurtosys_*" -o -name "DBAdmin_24062026_*" \))
 if [ -z "$REMAINING" ]; then
     echo "All orphaned snapshots deleted successfully."
 else
