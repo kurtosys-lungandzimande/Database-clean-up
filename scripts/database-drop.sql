@@ -2,9 +2,9 @@
 -- Database Drop Script — Release Environment SingleStore
 -- Ticket: Remove Unneeded Databases in the Rel_Env
 -- Prepared by: Lunga Ndzimande
--- Date: 2026-08-04
--- Status: Pending Stakeholder Approval
--- DO NOT EXECUTE without written approval
+-- Date: 2026-08-13
+-- Status: Approved — Jacobus van Heerden confirmed 2026-08-13
+-- Remaining: UDM1_Kurtosys only (DBAdmin_24062026_* dropped 2026-08-06)
 -- ============================================================
 
 
@@ -14,13 +14,7 @@
 -- ============================================================
 
 SELECT * FROM information_schema.PROCESSLIST
-WHERE DB IN (
-    'UDM1_Kurtosys',
-    'DBAdmin_24062026_Instant',
-    'DBAdmin_24062026_Instant_direct',
-    'DBAdmin_24062026_standard',
-    'DBAdmin_24062026_standard_direct'
-);
+WHERE DB = 'UDM1_Kurtosys';
 
 
 -- ============================================================
@@ -29,13 +23,7 @@ WHERE DB IN (
 
 SELECT table_schema, COUNT(*) AS table_count
 FROM information_schema.tables
-WHERE table_schema IN (
-    'UDM1_Kurtosys',
-    'DBAdmin_24062026_Instant',
-    'DBAdmin_24062026_Instant_direct',
-    'DBAdmin_24062026_standard',
-    'DBAdmin_24062026_standard_direct'
-)
+WHERE table_schema = 'UDM1_Kurtosys'
 GROUP BY table_schema;
 
 
@@ -44,14 +32,7 @@ GROUP BY table_schema;
 -- Confirm each succeeds before running the next
 -- ============================================================
 
-DROP DATABASE DBAdmin_24062026_Instant;
-
-DROP DATABASE DBAdmin_24062026_Instant_direct;
-
-DROP DATABASE DBAdmin_24062026_standard;
-
-DROP DATABASE DBAdmin_24062026_standard_direct;
-
+-- DBAdmin_24062026_* databases already dropped 2026-08-06
 DROP DATABASE UDM1_Kurtosys;
 
 
